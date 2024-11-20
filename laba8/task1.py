@@ -82,12 +82,12 @@ def update_sender_phone(cursor):
     
 connection, cursor = initialize_database()
     
-    create_courier_table(cursor)
-    create_sender_table(cursor)
-    add_courier_sample(cursor)
-    add_sender_sample(cursor)
-    update_sender_phone(cursor)
-    
-    connection.commit()
-    connection.close()
+create_courier_table(cursor)
+create_sender_table(cursor)
+add_courier_sample(cursor)
+add_sender_sample(cursor)
+update_sender_phone(cursor)
+
+connection.commit()
+connection.close()
 
