@@ -2,7 +2,6 @@ import openpyxl
 from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 
-# Исходные данные
 data = [
     {"Таб. номер": "0002", "Фамилия": "Петров П.П.", "Отдел": "Бухгалтерия", "Сумма по окладу, руб.": 3913.04,
      "Сумма по надбавкам, руб.": 2608.7, "НДФЛ, %": 13},
@@ -24,14 +23,12 @@ data = [
     {"Общий итог": "Общий итог"}
 ]
 
-# Инициализация рабочей книги
 wb = openpyxl.Workbook()
 sheet = wb.active
 headers = ["Таб. номер", "Фамилия", "Отдел", "Сумма по окладу, руб.", "Сумма по надбавкам, руб.",
            "Сумма зарплаты, руб.", "НДФЛ, %", "Сумма НДФЛ, руб.", "Сумма к выдаче, руб."]
 sheet.append(headers)
 
-# Переменные для статистики по каждому отделу
 section_stats = {
     "Сумма по окладу, руб.": 0,
     "Сумма по надбавкам, руб.": 0,
@@ -49,7 +46,6 @@ final_stats = {
 }
 
 
-# Функция для вычисления итогов по строкам
 def calculate_and_add_row(row):
     salary = row["Сумма по окладу, руб."] + row["Сумма по надбавкам, руб."]
     tax = round(salary * row["НДФЛ, %"] / 100, 2)
@@ -58,7 +54,6 @@ def calculate_and_add_row(row):
         [row["Таб. номер"], row["Фамилия"], row["Отдел"], row["Сумма по окладу, руб."], row["Сумма по надбавкам, руб."],
          salary, row["НДФЛ, %"], tax, net_salary])
 
-    # Обновляем статистику отдела
     section_stats["Сумма по окладу, руб."] += row["Сумма по окладу, руб."]
     section_stats["Сумма по надбавкам, руб."] += row["Сумма по надбавкам, руб."]
     section_stats["Сумма зарплаты, руб."] += salary
@@ -66,7 +61,6 @@ def calculate_and_add_row(row):
     section_stats["Сумма к выдаче, руб."] += net_salary
 
 
-# Обработка данных
 for record in data:
     if "Таб. номер" in record:
         calculate_and_add_row(record)
@@ -79,7 +73,6 @@ for record in data:
             section_stats["Сумма НДФЛ, руб."],
             section_stats["Сумма к выдаче, руб."]
         ])
-        # Сбрасываем статистику после вывода итогов по отделу
         final_stats = {key: final_stats[key] + section_stats[key] for key in section_stats}
         section_stats = {key: 0 for key in section_stats}
     elif "Общий итог" in record:
@@ -92,9 +85,7 @@ for record in data:
             final_stats["Сумма к выдаче, руб."]
         ])
 
-# Применение жирного шрифта для определённых ячеек
 for cell in ['C4', 'C9', 'C11', 'C12']:
     sheet[cell].font = Font(bold=True)
 
-# Сохранение файла
 wb.save("table.xlsx")
